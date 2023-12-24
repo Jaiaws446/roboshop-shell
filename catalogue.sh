@@ -42,7 +42,7 @@ dnf install nodejs -y &>> $LOGFILE
 
 VALIDATE $? "installing nodejs18" 
 
-useradd roboshop &>> $LOGFILE
+useradd roboshop
 
 VALIDATE $? "creating roboshop user" 
 
@@ -90,9 +90,7 @@ dnf install mongodb-org-shell -y &>> $LOGFILE
 
 VALIDATE $? "installing mongodb client" 
 
-mongo --host MONGODB-SERVER-IPADDRESS </app/schema/catalogue.js
-
-mongo --host $MONGODB_HOST </app/schema/catalogue.js
+mongo --host $MONGODB_HOST </app/schema/catalogue.js &>> $LOGFILE
 
 VALIDATE $? "Loading catalogue data into mongodb" 
 
