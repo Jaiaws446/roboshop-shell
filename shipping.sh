@@ -43,54 +43,54 @@ else
     echo -e "roboshop user already exist $Y SKIPPING $N"
 fi     
 
-mkdir -p /app
+mkdir -p /app &>> $LOGFILE
 
 VALIDATE $? "creating app directory"
 
-curl -L -o /tmp/shipping.zip https://roboshop-builds.s3.amazonaws.com/shipping.zip
+curl -L -o /tmp/shipping.zip https://roboshop-builds.s3.amazonaws.com/shipping.zip &>> $LOGFILE
 
 VALIDATE $? "downloading shipping"
 
-cd /app
+cd /app &>> $LOGFILE
 
 VALIDATE $? "moving to app directory"
 
-unzip -o /tmp/shipping.zip
+unzip -o /tmp/shipping.zip &>> $LOGFILE
 
 VALIDATE $? "unzipping shipping"
 
-mvn clean package
+mvn clean package &>> $LOGFILE
 
 VALIDATE $? "Installing dependencies"
 
-mv target/shipping-1.0.jar shipping.jar
+mv target/shipping-1.0.jar shipping.jar &>> $LOGFILE
 
 VALIDATE $? "Renaming jar file"
 
-cp /home/centos/roboshop-shell/shipping.service /etc/systemd/system/shipping.service
+cp /home/centos/roboshop-shell/shipping.service /etc/systemd/system/shipping.service &>> $LOGFILE
 
 VALIDATE $? "copying shipping service"
 
-systemctl daemon-reload
+systemctl daemon-reload &>> $LOGFILE
 
 VALIDATE $? "deamon reload"
 
-systemctl enable shipping 
+systemctl enable shipping  &>> $LOGFILE
 
 VALIDATE $? "enable shipping"
 
-systemctl start shipping
+systemctl start shipping &>> $LOGFILE
 
 VALIDATE $? "Start shipping"
 
-dnf install mysql -y
+dnf install mysql -y &>> $LOGFILE
 
 VALIDATE $? "Installing MYSQL client"
 
-mysql -h mysql.jaiaws446.online -uroot -pRoboShop@1 < /app/schema/shipping.sql 
+mysql -h mysql.jaiaws446.online -uroot -pRoboShop@1 < /app/schema/shipping.sql &>> $LOGFILE
 
 VALIDATE $? "Loading shipping data"
 
-systemctl restart shipping
+systemctl restart shipping &>> $LOGFILE
 
 VALIDATE $? "Restart shipping"
