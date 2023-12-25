@@ -46,19 +46,33 @@ mkdir -p /app
 
 VALIDATE $? "creating app directory"
 
-curl -L -o /tmp/payment.zip https://roboshop-builds.s3.amazonaws.com/payment.zip
+curl -L -o /tmp/payment.zip https://roboshop-builds.s3.amazonaws.com/payment.zip &>> $LOGFILE
+
+VALIDATE $? "downloading payment"
 
 cd /app 
 
-unzip -o /tmp/payment.zip
+unzip -o /tmp/payment.zip &>> $LOGFILE
 
-pip3.6 install -r requirements.txt
+VALIDATE $? "unzipping payment"
 
-cp /home/centos/roboshop-shell/payment.service /etc/systemd/system/payment.service
+pip3.6 install -r requirements.txt &>> $LOGFILE
 
-systemctl daemon-reload
+VALIDATE $? "installing requirements"
 
-systemctl enable payment 
+cp /home/centos/roboshop-shell/payment.service /etc/systemd/system/payment.service &>> $LOGFILE
 
-systemctl start payment
+VALIDATE $? "copying payment service"
+
+systemctl daemon-reload &>> $LOGFILE
+
+VALIDATE $? "daemon reload"
+
+systemctl enable payment &>> $LOGFILE
+
+VALIDATE $? "enabling payment"
+
+systemctl start payment &>> $LOGFILE
+
+VALIDATE $? "starting payment"
 
