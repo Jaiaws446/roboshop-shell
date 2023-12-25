@@ -31,26 +31,26 @@ else
     echo "you are root user"
 fi #fi means reverse of if, indicating condition end
 
-dnf module disable mysql -y &>> $LOGFILE
+dnf install python36 gcc python3-devel -y
 
-VALIDATE $? "Disabling current mysql version"
+id roboshop
+if [ $? -ne 0 ]
+then 
+    useradd roboshop
+    VALIDATE $? "roboshop user creation"
+else
+    echo -e "roboshop user already exist $Y SKIPPING $N"
+fi     
 
-cp mysql.repo /etc/yum.repos.d/mysql.repo
+mkdir -p /app
 
-VALIDATE $? "copied mysql repo"
+VALIDATE $? "creating app directory"
 
-dnf install mysql-community-server -y &>> $LOGFILE
+curl -L -o /tmp/payment.zip https://roboshop-builds.s3.amazonaws.com/payment.zip
 
-VALIDATE $? "installing mysql"
+cd /app 
 
-systemctl enable mysqld &>> $LOGFILE
+unzip -o /tmp/payment.zip
 
-VALIDATE $? "Enabling mysql"
+pip3.6 install -r requirements.txt
 
-systemctl start mysqld &>> $LOGFILE
-
-VALIDATE $? "Starting mysql"
-
-mysql_secure_installation --set-root-pass RoboShop@1 &>> $LOGFILE
-
-VALIDATE $? "Setting mysql root password"
